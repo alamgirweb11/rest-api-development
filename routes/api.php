@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResource('student-classes', 'API\StudentClassController');
+Route::apiResource('subjects', 'API\SubjectController');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
