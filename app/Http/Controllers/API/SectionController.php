@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Section;
 use Illuminate\Http\Request;
 
 class SectionController extends Controller
@@ -14,7 +15,8 @@ class SectionController extends Controller
      */
     public function index()
     {
-        //
+        $sections = Section::all();
+        return response()->json($sections);
     }
 
     /**
@@ -35,7 +37,16 @@ class SectionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validation = $request->validate([
+            'section_name' => 'required|string|max:15|unique:sections',
+    ]);
+    $input = $request->all();
+    try{
+         $section = Section::create($input);
+         return response()->json(['success' => $section, 'success code'=>200]);
+    }catch(\Exception $e){
+         return response()->json(['error' => $e->getMessage()], $e->getCode());
+    }
     }
 
     /**
@@ -46,7 +57,12 @@ class SectionController extends Controller
      */
     public function show($id)
     {
-        //
+        $section = Section::find($id);
+        if(!$section){
+             return response('This section is not exists! try another one.');
+        }else{
+            return response()->json(['message' => 'Yeah! data available.', 'data' => $section]);
+        }
     }
 
     /**
@@ -57,7 +73,7 @@ class SectionController extends Controller
      */
     public function edit($id)
     {
-        //
+       
     }
 
     /**
@@ -69,7 +85,17 @@ class SectionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $section = Section::find($id);
+        $validation = $request->validate([
+            'section_name' => 'required|string|max:15|unique:sections',
+    ]);
+    $input = $request->all();
+    try{
+         $section->update($input);
+         return response()->json(['success' => $section, 'success code'=>200]);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], $e->getCode());
+        }
     }
 
     /**
@@ -80,6 +106,12 @@ class SectionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $section = Section::find($id);
+        try{
+            $section->delete();
+            return response()->json(['success' => 'Section has been deleted!']);
+       }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], $e->getCode());
+       }
     }
 }
