@@ -90,7 +90,11 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $student = Student::findOrFail($id);
+        $student = Student::where('id',$id)->first();
+
+        if(!$student){
+              return response()->json(['message'=>'Request Id not found.', 404]);
+        }
 
         $input = $request->all();
 
